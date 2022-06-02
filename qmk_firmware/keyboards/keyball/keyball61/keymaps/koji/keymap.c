@@ -37,7 +37,10 @@ enum custom_keycodes {
   CUT,
   PASTE,
   KLLN, // Kill-line
-  MARK
+  MARK,
+  BACK,
+  FORWARD,
+  SCRL_MO2
 };
 
 // clang-format off
@@ -60,9 +63,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_RAISE] = LAYOUT_universal(
     _______  , _______  , _______  , _______  , _______  , _______  ,                                  _______  , _______  , _______  , _______  , _______  , _______  ,
-    _______  , _______  , _______  , _______  , _______  , _______  ,                                  _______  , _______  , _______  , _______  , _______  , _______  ,
+    _______  , _______  , _______  , _______  , _______  , _______  ,                                  _______  , _______  , SCRL_MO2  , _______  , _______  , _______  ,
     _______  , _______  , _______  , _______  , _______  , _______  ,                                  KC_PGUP  , KC_BTN1  , KC_BTN3  , KC_BTN2  , _______  , _______  ,
-    _______  , _______  , _______  , _______  , _______  , _______  , _______  ,             _______ , KC_PGDN  , CPI_D100 , CPI_I100  , _______  , _______  , _______  ,
+    _______  , _______  , _______  , _______  , _______  , _______  , _______  ,             _______ , KC_PGDN  , BACK     , SCRL_MO2  , FORWARD  , _______  , _______  ,
     _______  , _______  , _______  , _______  , _______  , _______  , _______  ,             _______ , _______  , _______  , _______  , _______  , _______  , _______
   ),
 
@@ -264,6 +267,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
+    case BACK:
+      if (record->event.pressed) {
+        SEND_STRING(SS_DOWN(X_LALT)SS_TAP(X_LEFT)SS_UP(X_LALT));
+        //SEND_STRING(SS_LCMD("["));
+      }
+      return false;
+      break;
+    case FORWARD:
+      if (record->event.pressed) {
+        SEND_STRING(SS_DOWN(X_LALT)SS_TAP(X_RIGHT)SS_UP(X_LALT));
+        //SEND_STRING(SS_LCMD("]"));
+      }
+      return false;
+      break;
+    case SCRL_MO2:
+      if (record->event.pressed) {
+        keyball_set_scroll_mode(1);
+      } else {
+        keyball_set_scroll_mode(0);
+      }
+      return false;
+      break;	  
+
   }
   return true;
 }
